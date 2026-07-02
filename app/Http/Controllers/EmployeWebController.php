@@ -43,7 +43,7 @@ class EmployeWebController extends Controller
             'departement_id' => $request->departement_id,
         ]);
 
-        return redirect('/employes');
+        return redirect('/employes')->with('success', 'Employe cree avec succes');
     }
 
     public function update(Request $request, $id)
@@ -68,12 +68,12 @@ class EmployeWebController extends Controller
             'departement_id' => $request->departement_id,
         ]);
 
-        return redirect('/employes');
+        return redirect('/employes')->with('success', 'Employe modifie avec succes');
     }
 
     public function destroy($id)
     {
         Employe::findOrFail($id)->delete();
-        return redirect('/employes');
+        return redirect('/employes')->with('success', 'Employe supprime avec succes');
     }
 }

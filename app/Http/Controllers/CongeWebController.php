@@ -43,7 +43,7 @@ class CongeWebController extends Controller
             'statut' => 'EN_ATTENTE',
         ]);
 
-        return redirect('/conges');
+        return redirect('/conges')->with('success', 'Demande soumise avec succes');
     }
 
     public function approuver($id)
@@ -54,7 +54,7 @@ class CongeWebController extends Controller
             'valide_par' => auth()->id(),
         ]);
 
-        return redirect('/conges');
+        return redirect('/conges')->with('success', 'Demande approuvee avec succes');
     }
 
     public function rejeter(Request $request, $id)
@@ -66,6 +66,6 @@ class CongeWebController extends Controller
             'commentaire' => $request->commentaire,
         ]);
 
-        return redirect('/conges');
+        return redirect('/conges')->with('success', 'Demande rejetee');
     }
 }

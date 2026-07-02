@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { router, usePage } from "@inertiajs/react";
+import Layout from "../../Components/Layout";
 
 export default function EmployesIndex() {
     const { employes, departements, auth } = usePage().props;
@@ -52,78 +53,67 @@ export default function EmployesIndex() {
         }
     }
 
-    function closeModal() {
-        setShowModal(false);
-    }
-
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white shadow-md p-4">
-                <div className="flex justify-between items-center max-w-6xl mx-auto">
-                    <h1 className="text-xl font-bold text-gray-800">SIRH - Gestion des employes</h1>
-                    <a href="/dashboard" className="text-blue-600 hover:underline">Retour au tableau de bord</a>
-                </div>
-            </nav>
-
-            <div className="max-w-6xl mx-auto p-8">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">Liste des employes</h2>
-                    {isAdmin ? (
-                        <button onClick={openCreateModal} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">+ Nouvel employe</button>
-                    ) : null}
-                </div>
-
-                <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                    <table className="w-full">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Nom</th>
-                                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Email</th>
-                                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Role</th>
-                                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Poste</th>
-                                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Departement</th>
-                                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            {employes.map(function (employe) {
-                                return (
-                                    <tr key={employe.id}>
-                                        <td className="px-6 py-4">{employe.prenom} {employe.nom}</td>
-                                        <td className="px-6 py-4">{employe.email}</td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">{employe.role}</span>
-                                        </td>
-                                        <td className="px-6 py-4">{employe.poste || "-"}</td>
-                                        <td className="px-6 py-4">{employe.departement ? employe.departement.nom : "-"}</td>
-                                        <td className="px-6 py-4">
-                                            <a href={"/pdf/attestation/" + employe.id} target="_blank" rel="noreferrer" className="text-purple-600 hover:underline mr-3">PDF</a>
-                                            {isAdmin ? (
-                                                <button onClick={function () { openEditModal(employe); }} className="text-blue-600 hover:underline mr-3">Modifier</button>
-                                            ) : null}
-                                            {isAdmin ? (
-                                                <button onClick={function () { handleDelete(employe.id); }} className="text-red-600 hover:underline">Supprimer</button>
-                                            ) : null}
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
-                </div>
+        <Layout>
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Liste des employes</h2>
+                {isAdmin && (
+                    <button onClick={openCreateModal} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        + Nouvel employe
+                    </button>
+                )}
             </div>
 
-            {showModal ? (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                <table className="w-full">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Nom</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Email</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Role</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Poste</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Departement</th>
+                            <th className="px-6 py-3 text-left text-sm font-semibold text-gray-600">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {employes.map(function (employe) {
+                            return (
+                                <tr key={employe.id}>
+                                    <td className="px-6 py-4">{employe.prenom} {employe.nom}</td>
+                                    <td className="px-6 py-4">{employe.email}</td>
+                                    <td className="px-6 py-4">
+                                        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs">{employe.role}</span>
+                                    </td>
+                                    <td className="px-6 py-4">{employe.poste || "-"}</td>
+                                    <td className="px-6 py-4">{employe.departement ? employe.departement.nom : "-"}</td>
+                                    <td className="px-6 py-4">
+                                        <a href={"/pdf/attestation/" + employe.id} target="_blank" rel="noreferrer" className="text-purple-600 hover:underline mr-3">PDF</a>
+                                        {isAdmin && (
+                                            <button onClick={function () { openEditModal(employe); }} className="text-blue-600 hover:underline mr-3">Modifier</button>
+                                        )}
+                                        {isAdmin && (
+                                            <button onClick={function () { handleDelete(employe.id); }} className="text-red-600 hover:underline">Supprimer</button>
+                                        )}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+            {showModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
                         <h3 className="text-lg font-bold mb-4">{editingEmploye ? "Modifier l'employe" : "Nouvel employe"}</h3>
                         <form onSubmit={handleSubmit}>
                             <input type="text" placeholder="Nom" value={form.nom} onChange={function (e) { setForm({ ...form, nom: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" required />
                             <input type="text" placeholder="Prenom" value={form.prenom} onChange={function (e) { setForm({ ...form, prenom: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" required />
                             <input type="email" placeholder="Email" value={form.email} onChange={function (e) { setForm({ ...form, email: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" required />
-                            {!editingEmploye ? (
+                            {!editingEmploye && (
                                 <input type="password" placeholder="Mot de passe" value={form.password} onChange={function (e) { setForm({ ...form, password: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" required />
-                            ) : null}
+                            )}
                             <select value={form.role} onChange={function (e) { setForm({ ...form, role: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg">
                                 <option value="EMPLOYE">Employe</option>
                                 <option value="DIRECTEUR">Directeur</option>
@@ -137,13 +127,13 @@ export default function EmployesIndex() {
                                 })}
                             </select>
                             <div className="flex justify-end gap-3">
-                                <button type="button" onClick={closeModal} className="px-4 py-2 text-gray-600">Annuler</button>
+                                <button type="button" onClick={function () { setShowModal(false); }} className="px-4 py-2 text-gray-600">Annuler</button>
                                 <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-lg">{editingEmploye ? "Modifier" : "Creer"}</button>
                             </div>
                         </form>
                     </div>
                 </div>
-            ) : null}
-        </div>
+            )}
+        </Layout>
     );
 }

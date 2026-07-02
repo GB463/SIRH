@@ -26,7 +26,7 @@ class DepartementWebController extends Controller
 
         Departement::create($request->all());
 
-        return redirect('/departements');
+        return redirect('/departements')->with('success', 'Departement cree avec succes');
     }
 
     public function update(Request $request, $id)
@@ -40,12 +40,12 @@ class DepartementWebController extends Controller
 
         $departement->update($request->all());
 
-        return redirect('/departements');
+        return redirect('/departements')->with('success', 'Departement modifie avec succes');
     }
 
     public function destroy($id)
     {
         Departement::findOrFail($id)->delete();
-        return redirect('/departements');
+        return redirect('/departements')->with('success', 'Departement supprime avec succes');
     }
 }
