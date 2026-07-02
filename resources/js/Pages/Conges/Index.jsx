@@ -9,6 +9,12 @@ export default function CongesIndex() {
 
     const isGestionnaire = auth.user.role === "DIRECTEUR" || auth.user.role === "ADMIN_RH";
 
+    function formatDate(dateStr) {
+        if (!dateStr) return "-";
+        const date = new Date(dateStr);
+        return date.toLocaleDateString("fr-FR");
+    }
+
     function handleSubmit(e) {
         e.preventDefault();
         router.post("/conges", form, {
@@ -66,8 +72,8 @@ export default function CongesIndex() {
                                     {isGestionnaire && (
                                         <td className="px-6 py-4">{demande.employe ? demande.employe.prenom + " " + demande.employe.nom : "-"}</td>
                                     )}
-                                    <td className="px-6 py-4">{demande.date_debut}</td>
-                                    <td className="px-6 py-4">{demande.date_fin}</td>
+                                    <td className="px-6 py-4">{formatDate(demande.date_debut)}</td>
+                                    <td className="px-6 py-4">{formatDate(demande.date_fin)}</td>
                                     <td className="px-6 py-4">{demande.motif}</td>
                                     <td className="px-6 py-4">
                                         <span className={"px-2 py-1 rounded text-xs " + (statutColor[demande.statut] || "")}>{demande.statut}</span>

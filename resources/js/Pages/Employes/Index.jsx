@@ -3,7 +3,7 @@ import { router, usePage } from "@inertiajs/react";
 import Layout from "../../Components/Layout";
 
 export default function EmployesIndex() {
-    const { employes, departements, auth } = usePage().props;
+    const { employes, departements, auth, errors } = usePage().props;
     const [showModal, setShowModal] = useState(false);
     const [editingEmploye, setEditingEmploye] = useState(null);
     const [form, setForm] = useState({
@@ -41,9 +41,13 @@ export default function EmployesIndex() {
     function handleSubmit(e) {
         e.preventDefault();
         if (editingEmploye) {
-            router.put("/employes/" + editingEmploye.id, form, { onSuccess: function () { setShowModal(false); } });
+            router.put("/employes/" + editingEmploye.id, form, {
+                onSuccess: function () { setShowModal(false); },
+            });
         } else {
-            router.post("/employes", form, { onSuccess: function () { setShowModal(false); } });
+            router.post("/employes", form, {
+                onSuccess: function () { setShowModal(false); },
+            });
         }
     }
 
@@ -105,27 +109,45 @@ export default function EmployesIndex() {
 
             {showModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-screen overflow-y-auto">
                         <h3 className="text-lg font-bold mb-4">{editingEmploye ? "Modifier l'employe" : "Nouvel employe"}</h3>
                         <form onSubmit={handleSubmit}>
-                            <input type="text" placeholder="Nom" value={form.nom} onChange={function (e) { setForm({ ...form, nom: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" required />
-                            <input type="text" placeholder="Prenom" value={form.prenom} onChange={function (e) { setForm({ ...form, prenom: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" required />
-                            <input type="email" placeholder="Email" value={form.email} onChange={function (e) { setForm({ ...form, email: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" required />
+                            <div className="mb-3">
+                                <input type="text" placeholder="Nom" value={form.nom} onChange={function (e) { setForm({ ...form, nom: e.target.value }); }} className="w-full px-3 py-2 border rounded-lg" required />
+                                {errors && errors.nom && <p className="text-red-500 text-xs mt-1">{errors.nom}</p>}
+                            </div>
+                            <div className="mb-3">
+                                <input type="text" placeholder="Prenom" value={form.prenom} onChange={function (e) { setForm({ ...form, prenom: e.target.value }); }} className="w-full px-3 py-2 border rounded-lg" required />
+                                {errors && errors.prenom && <p className="text-red-500 text-xs mt-1">{errors.prenom}</p>}
+                            </div>
+                            <div className="mb-3">
+                                <input type="email" placeholder="Email" value={form.email} onChange={function (e) { setForm({ ...form, email: e.target.value }); }} className="w-full px-3 py-2 border rounded-lg" required />
+                                {errors && errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                            </div>
                             {!editingEmploye && (
-                                <input type="password" placeholder="Mot de passe" value={form.password} onChange={function (e) { setForm({ ...form, password: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" required />
+                                <div className="mb-3">
+                                    <input type="password" placeholder="Mot de passe (min 6 caracteres)" value={form.password} onChange={function (e) { setForm({ ...form, password: e.target.value }); }} className="w-full px-3 py-2 border rounded-lg" required />
+                                    {errors && errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                                </div>
                             )}
-                            <select value={form.role} onChange={function (e) { setForm({ ...form, role: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg">
-                                <option value="EMPLOYE">Employe</option>
-                                <option value="DIRECTEUR">Directeur</option>
-                                <option value="ADMIN_RH">Administrateur RH</option>
-                            </select>
-                            <input type="text" placeholder="Poste" value={form.poste} onChange={function (e) { setForm({ ...form, poste: e.target.value }); }} className="w-full mb-3 px-3 py-2 border rounded-lg" />
-                            <select value={form.departement_id} onChange={function (e) { setForm({ ...form, departement_id: e.target.value }); }} className="w-full mb-4 px-3 py-2 border rounded-lg">
-                                <option value="">Aucun departement</option>
-                                {departements.map(function (dep) {
-                                    return <option key={dep.id} value={dep.id}>{dep.nom}</option>;
-                                })}
-                            </select>
+                            <div className="mb-3">
+                                <select value={form.role} onChange={function (e) { setForm({ ...form, role: e.target.value }); }} className="w-full px-3 py-2 border rounded-lg">
+                                    <option value="EMPLOYE">Employe</option>
+                                    <option value="DIRECTEUR">Directeur</option>
+                                    <option value="ADMIN_RH">Administrateur RH</option>
+                                </select>
+                            </div>
+                            <div className="mb-3">
+                                <input type="text" placeholder="Poste" value={form.poste} onChange={function (e) { setForm({ ...form, poste: e.target.value }); }} className="w-full px-3 py-2 border rounded-lg" />
+                            </div>
+                            <div className="mb-4">
+                                <select value={form.departement_id} onChange={function (e) { setForm({ ...form, departement_id: e.target.value }); }} className="w-full px-3 py-2 border rounded-lg">
+                                    <option value="">Aucun departement</option>
+                                    {departements.map(function (dep) {
+                                        return <option key={dep.id} value={dep.id}>{dep.nom}</option>;
+                                    })}
+                                </select>
+                            </div>
                             <div className="flex justify-end gap-3">
                                 <button type="button" onClick={function () { setShowModal(false); }} className="px-4 py-2 text-gray-600">Annuler</button>
                                 <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-lg">{editingEmploye ? "Modifier" : "Creer"}</button>
